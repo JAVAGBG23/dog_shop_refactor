@@ -39,6 +39,7 @@ public class FilterRegistry {
             return false;
         });
         // material
+        // den här borde kanske vart med i basklassen
         collarFilters.put("material", value -> product -> {
             if(product instanceof Collar) {
                 Collar collar = (Collar) product;

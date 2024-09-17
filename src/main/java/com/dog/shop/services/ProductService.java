@@ -1,69 +1,85 @@
 package com.dog.shop.services;
 
-import com.dog.shop.dto.ProductDTO;
+import com.dog.shop.exceptions.ResourceNotFoundException;
 import com.dog.shop.models.Product;
 import com.dog.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ProductService {
-    @Autowired
-    private ProductRepository productRepository;
+public class ProductService <T extends Product> {
+   // innehålla basic crud operationer
+    private final ProductRepository<T> productRepository;
 
-    public List<Product> getAllProducts() {
+    @Autowired
+    public ProductService(ProductRepository<T> productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    // getAll
+    public List<T> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public Product createProduct(ProductDTO productDTO) {
-        Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setColor(productDTO.getColor());
-        product.setPrice(productDTO.getPrice());
-        product.setStockQuantity(productDTO.getStockQuantity());
-
-        product.setSize(productDTO.getSize());
-        product.setMaterial(productDTO.getMaterial());
-        product.setLength(productDTO.getLength());
-        product.setType(productDTO.getType());
-        product.setCapacity(productDTO.getCapacity());
-
+    // create
+    public T createProduct(T product) {
         return productRepository.save(product);
     }
 
+    // productById
+    public Optional<T> getProductById(String id) {
+        return productRepository.findById(id);
+    }
+
+    // update
+    public T updateProduct(String id, T product) {
+        if(!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Product not found with id " + id);
+        }
+        product.setId(id);
+        return productRepository.save(product);
+    }
+
+    // delete
     public void deleteProduct(String id) {
+        if(!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Product not found with id " + id);
+        }
         productRepository.deleteById(id);
     }
-
-    public List<Product> getProductsByName(String name) {
-        return productRepository.findByName(name);
-    }
-
-    public List<Product> getProductsByPriceRange(double minPrice, double maxPrice) {
-        return productRepository.findByPriceBetween(minPrice, maxPrice);
-    }
-
-    public List<Product> getProductsByColor(String color) {
-        return productRepository.findByColor(color);
-    }
-
-    public List<Product> getProductsBySizeAndMaterial(String size, String material) {
-        return productRepository.findBySizeAndMaterial(size, material);
-    }
-
-    public List<Product> getCollarsByLength(double length) {
-        return productRepository.findByLength(length);
-    }
-
-    public List<Product> getToysByType(String type) {
-        return productRepository.findByType(type);
-    }
-
-    public List<Product> getBowlsByCapacity(double capacity) {
-        return productRepository.findByCapacity(capacity);
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
