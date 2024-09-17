@@ -1,10 +1,22 @@
 package com.dog.shop.models;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
+// basklass
 @Document(collection = "products")
-public class Product {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "productType")
+@JsonSubTypes({
+       @JsonSubTypes.Type(value = Collar.class, name = "collar"),
+        @JsonSubTypes.Type(value = Leash.class, name = "leash"),
+        @JsonSubTypes.Type(value = Toy.class, name = "toy"),
+        @JsonSubTypes.Type(value = Bowl.class, name = "bowl"),
+})
+public abstract class Product {
     @Id
     private String id;
     private String name;
@@ -12,15 +24,6 @@ public class Product {
     private String color;
     private double price;
     private int stockQuantity;
-
-    private String size;
-    private String material;
-
-    private double length;
-
-    private String type;
-
-    private double capacity;
 
     public Product() {
     }
@@ -71,45 +74,5 @@ public class Product {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public String getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(String material) {
-        this.material = material;
-    }
-
-    public double getLength() {
-        return length;
-    }
-
-    public void setLength(double length) {
-        this.length = length;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public double getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(double capacity) {
-        this.capacity = capacity;
     }
 }

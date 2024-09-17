@@ -1,23 +1,10 @@
 package com.dog.shop.services;
 
-import com.dog.shop.dto.OrderDTO;
-import com.dog.shop.dto.OrderResponse;
-import com.dog.shop.models.Order;
-import com.dog.shop.models.Product;
-import com.dog.shop.models.User;
-import com.dog.shop.repository.OrderRepository;
-import com.dog.shop.repository.ProductRepository;
-import com.dog.shop.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    @Autowired
+   /* @Autowired
     OrderRepository orderRepository;
 
     @Autowired
@@ -68,5 +55,5 @@ public class OrderService {
         orderResponse.setOrderedDate(order.getOrderedDate());
 
         return orderResponse;
-    }
+    }*/
 }
