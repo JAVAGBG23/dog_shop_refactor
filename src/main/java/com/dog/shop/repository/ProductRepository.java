@@ -2,22 +2,16 @@ package com.dog.shop.repository;
 
 import com.dog.shop.models.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface ProductRepository extends MongoRepository<Product, String> {
-    List<Product> findByName(String name);
+@Repository
+public interface ProductRepository<T extends Product> extends MongoRepository<T, String> {
+    @Query("{ '_class' : ?0 }")
+    List<Product> findByProductType(String typeAlias);
 
-    List<Product> findByPriceBetween(double minPrice, double maxPrice);
 
-    List<Product> findByColor(String color);
-
-    List<Product> findBySizeAndMaterial(String size, String material);
-
-    List<Product> findByLength(double length);
-
-    List<Product> findByType(String type);
-
-    List<Product> findByCapacity(double capacity);
 }
 
