@@ -32,7 +32,7 @@ public class OrderService {
         User user = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user id"));
 
-        // lista med produkter, då måste mappa/loopa igenom listan och hitta idn
+
         List<Product> products = new ArrayList<>();
         for (String productId : orderDTO.getProductIds()) {
             products.add(productRepository.findById(productId)
@@ -47,23 +47,19 @@ public class OrderService {
         return orderRepository.save(newOrder);
     }
 
-    // hämta alla ordrar
     public List<OrderResponse> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
-        // skapa en convert metod
         return orders.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // hämta ordrar baserat på userId
-    public List<OrderResponse> getUserOrders(String userId) {
-        // här bör vi verkligen kolla att usern finns först!
 
+    public List<OrderResponse> getUserOrders(String userId) {
         List<Order> orders = orderRepository.findByUserId(userId);
         return orders.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
 
-    // hjälpmetod (util)
+
     private OrderResponse convertToDTO(Order order) {
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setUserId(order.getUser().getId());

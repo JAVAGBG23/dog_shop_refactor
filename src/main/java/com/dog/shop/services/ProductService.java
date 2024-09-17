@@ -18,7 +18,6 @@ public class ProductService {
     }
 
     public Product createProduct(ProductDTO productDTO) {
-        // Omvandla DTO till en Product-entity
         Product product = new Product();
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
@@ -26,14 +25,12 @@ public class ProductService {
         product.setPrice(productDTO.getPrice());
         product.setStockQuantity(productDTO.getStockQuantity());
 
-        // Kategorispecifika egenskaper
         product.setSize(productDTO.getSize());
         product.setMaterial(productDTO.getMaterial());
         product.setLength(productDTO.getLength());
         product.setType(productDTO.getType());
         product.setCapacity(productDTO.getCapacity());
 
-        // Spara produkten i databasen
         return productRepository.save(product);
     }
 

@@ -15,7 +15,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    // POST-request för att skapa en produkt
     @PostMapping
     public Product createProduct(@RequestBody ProductDTO productDTO) {
         return productService.createProduct(productDTO);  // Vidarebefordra DTO till servicelagret

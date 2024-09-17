@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "products")
 public class Product {
-    // PROBLEM: product är för bred och egenskaperna passar olike för olika typer av produkter
     @Id
     private String id;
     private String name;
@@ -14,18 +13,14 @@ public class Product {
     private double price;
     private int stockQuantity;
 
-    // COLLAR
-    private String size; // e.g., S, M, L
-    private String material; // e.g., leather, nylon
+    private String size;
+    private String material;
 
-    // LEASH
-    private double length; // length of the leash in meters
+    private double length;
 
-    // TOY
-    private String type; // e.g., ball, chew toy
+    private String type;
 
-    // BOWL
-    private double capacity; // in liters
+    private double capacity;
 
     public Product() {
     }

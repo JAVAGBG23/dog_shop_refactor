@@ -9,14 +9,12 @@ public class ProductDTO {
     private double price;
     private int stockQuantity;
 
-    // Specifika egenskaper för olika produktkategorier
-    private String size;      // Halsband (Collar)
-    private String material;  // Halsband och Koppel (Collar och Leash)
-    private double length;    // Koppel (Leash)
-    private String type;      // Leksak (Toy)
-    private double capacity;  // Matskål (Bowl)
+    private String size;
+    private String material;
+    private double length;
+    private String type;
+    private double capacity;
 
-    // Constructors
     public ProductDTO() {}
 
     public ProductDTO(String id, String name, String description, String color, double price, int stockQuantity,
@@ -33,8 +31,6 @@ public class ProductDTO {
         this.type = type;
         this.capacity = capacity;
     }
-
-    // Getters and Setters
 
     public String getId() {
         return id;
