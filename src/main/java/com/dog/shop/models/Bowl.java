@@ -3,7 +3,7 @@ package com.dog.shop.models;
 import org.springframework.data.annotation.TypeAlias;
 
 @TypeAlias("bowlProduct")
-public class Bowl {
+public class Bowl extends Product{
     private double capacity;
 
     public Bowl() {
