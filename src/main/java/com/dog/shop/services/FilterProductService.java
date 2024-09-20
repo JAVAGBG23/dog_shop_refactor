@@ -1,11 +1,16 @@
 package com.dog.shop.services;
 
+import com.dog.shop.filters.FilterRegistry;
+import com.dog.shop.filters.ProductFilter;
 import com.dog.shop.models.*;
 import com.dog.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class FilterProductService {
@@ -17,7 +22,29 @@ public class FilterProductService {
     }
 
     // metod för att filtrera produkter baserat på parametrar
+    public List<Product> filterProducts(Map<String, String> params) {
+        String productTypeAlias = getProductType(params.get("productType"));
 
+      Map<String, ProductFilter<Product>>  filters = FilterRegistry.getFiltersForType((getProductClassFromAlias(productTypeAlias)));
+
+      List<Predicate<Product>> predicates = params.entrySet().stream()
+              .filter(entry -> filters.containsKey(entry.getKey()))
+              .map(entry ->{
+                  String paramName = entry.getKey();
+                  String paramValue = entry.getValue();
+                  return filters.get(paramName).apply(paramValue);
+              })
+              .collect(Collectors.toList());
+
+      Predicate<Product> combinedPredicate = predicates.stream()
+              .reduce(product -> true, Predicate::and);
+
+      List<Product> allProducts = fetchProductsByType(productTypeAlias);
+
+      return allProducts.stream()
+              .filter(combinedPredicate)
+              .collect(Collectors.toList());
+    }
 
     // hjälpmetod för att avgöra produktens typ alias från ens sträng
     private String getProductType(String typeName) {
@@ -43,7 +70,7 @@ public class FilterProductService {
         return productRepository.findByProductType(productTypeAlias);
     }
 
-    // hjälpmetod som hjälper till att hämta klassen från alias (GilterRegistry lookup)
+    // hjälpmetod som hjälper till att hämta klassen från alias (FilterRegistry lookup)
     private Class<? extends Product> getProductClassFromAlias(String alias) {
         switch (alias) {
             case "collarProduct":
