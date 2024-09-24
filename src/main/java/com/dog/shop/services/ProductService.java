@@ -1,55 +1,45 @@
 package com.dog.shop.services;
 
-import com.dog.shop.exceptions.ResourceNotFoundException;
+import com.dog.shop.factory.ProductFactory;
+import com.dog.shop.factory.ProductFactoryProvider;
 import com.dog.shop.models.Product;
 import com.dog.shop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class ProductService <T extends Product> {
+public class ProductService {
    // innehålla basic crud operationer
-    private final ProductRepository<T> productRepository;
+    private final ProductRepository productRepository;
+    private final ProductFactoryProvider productFactoryProvider;
 
     @Autowired
-    public ProductService(ProductRepository<T> productRepository) {
+    public ProductService(ProductRepository productRepository, ProductFactoryProvider productFactoryProvider) {
         this.productRepository = productRepository;
+        this.productFactoryProvider = productFactoryProvider;
     }
 
-    // getAll
-    public List<T> getAllProducts() {
+    public Product createProduct(String productType, Map<String, Object> productDetails) {
+        // hämta rätt factory baserat på productType
+        ProductFactory productFactory = productFactoryProvider.getFactory(productType);
+
+        // skapa produkt genom factory
+        Product product = productFactory.createProduct(productDetails);
+
+        return productRepository.save(product);
+    }
+
+   public List<Product> getAllProducts() {
         return productRepository.findAll();
-    }
+   }
 
-    // create
-    public T createProduct(T product) {
-        return productRepository.save(product);
-    }
-
-    // productById
-    public Optional<T> getProductById(String id) {
+   public Optional<Product> getProductById(String id) {
         return productRepository.findById(id);
-    }
-
-    // update
-    public T updateProduct(String id, T product) {
-        if(!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Product not found with id " + id);
-        }
-        product.setId(id);
-        return productRepository.save(product);
-    }
-
-    // delete
-    public void deleteProduct(String id) {
-        if(!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Product not found with id " + id);
-        }
-        productRepository.deleteById(id);
-    }
+   }
 }
 
 

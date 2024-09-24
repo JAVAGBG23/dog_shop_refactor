@@ -8,17 +8,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    private final ProductService<Product> productService;
+    private final ProductService productService;
 
     @Autowired
-    public ProductController(ProductService<Product> productService) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@RequestBody Map<String, Object> productDetails) {
+        try {
+            String productType = (String) productDetails.get("productType");
+            Product product = productService.createProduct(productType, productDetails);
+            return ResponseEntity.status(HttpStatus.CREATED).body(product);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping
@@ -27,29 +38,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{id}")
+ /*   @GetMapping("/{id}")
     public ResponseEntity<Optional<Product>> getProductById(@PathVariable String id) {
         Optional<Product> product = productService.getProductById(id);
         return ResponseEntity.ok(product);
-    }
+    }*/
 
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product createdProduct = productService.createProduct(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody Product product) {
-        Product updateProduct = productService.updateProduct(id, product);
-        return ResponseEntity.ok(updateProduct);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
-    }
 }
 
 

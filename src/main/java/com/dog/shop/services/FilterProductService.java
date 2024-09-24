@@ -1,17 +1,6 @@
 package com.dog.shop.services;
 
-import com.dog.shop.filters.FilterRegistry;
-import com.dog.shop.filters.ProductFilter;
-import com.dog.shop.models.*;
-import com.dog.shop.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
+/*
 @Service
 public class FilterProductService {
     private final ProductRepository<Product> productRepository;
@@ -95,6 +84,7 @@ public class FilterProductService {
 
 
 
+*/
 
 
 
