@@ -1,74 +1,61 @@
 package com.dog.shop.services;
 
-/*
+
+import com.dog.shop.models.*;
+import com.dog.shop.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class FilterProductService {
-    private final ProductRepository<Product> productRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public FilterProductService(ProductRepository<Product> productRepository) {
+    public FilterProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    // metod för att filtrera produkter baserat på parametrar
-    public List<Product> filterProducts(Map<String, String> params) {
+    public List<Product> filterProducts (Map<String, String>params) {
         String productTypeAlias = getProductType(params.get("productType"));
+        Class<? extends  Product> productClass = getProductClassFromAlias(productTypeAlias);
 
-      Map<String, ProductFilter<Product>>  filters = FilterRegistry.getFiltersForType((getProductClassFromAlias(productTypeAlias)));
-
-      List<Predicate<Product>> predicates = params.entrySet().stream()
-              .filter(entry -> filters.containsKey(entry.getKey()))
-              .map(entry ->{
-                  String paramName = entry.getKey();
-                  String paramValue = entry.getValue();
-                  return filters.get(paramName).apply(paramValue);
-              })
-              .toList();
-
-      Predicate<Product> combinedPredicate = predicates.stream()
-              .reduce(product -> true, Predicate::and);
-
-      List<Product> allProducts = fetchProductsByType(productTypeAlias);
-
-      return allProducts.stream()
-              .filter(combinedPredicate)
-              .collect(Collectors.toList());
+        return productRepository.findProductByCriteria(params, productClass);
     }
+
+
 
     // hjälpmetod för att avgöra produktens typ alias från ens sträng
     private String getProductType(String typeName) {
         if (typeName == null || typeName.isEmpty()) {
-            return "product";
+            return Product.class.getSimpleName();
         }
         switch(typeName.toLowerCase()) {
             case "collar":
-                return "collarProduct";
+                return Collar.class.getSimpleName();
             case "leash":
-                return "leashProduct";
+                return Leash.class.getSimpleName();
             case "toy":
-                return "toyProduct";
+                return Toy.class.getSimpleName();
             case "bowl":
-                return "bowlProduct";
+                return Bowl.class.getSimpleName();
             default:
                 throw new IllegalArgumentException("Unknown product type " + typeName);
         }
     }
 
-    // hjälpmetod för att hämta produkter by type alias
-    private List<Product> fetchProductsByType (String productTypeAlias) {
-        return productRepository.findByProductType(productTypeAlias);
-    }
-
     // hjälpmetod som hjälper till att hämta klassen från alias (FilterRegistry lookup)
     private Class<? extends Product> getProductClassFromAlias(String alias) {
         switch (alias) {
-            case "collarProduct":
+            case "Collar":
                 return Collar.class;
-            case "leashProduct":
+            case "Leash":
                 return Leash.class;
-            case "toyProduct":
+            case "Toy":
                 return Toy.class;
-            case "bowlProduct":
+            case "Bowl":
                 return Bowl.class;
             default:
                 return Product.class;
@@ -84,7 +71,7 @@ public class FilterProductService {
 
 
 
-*/
+
 
 
 

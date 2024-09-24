@@ -41,13 +41,45 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         }
 
         Map<String, BiConsumer<Criteria, String>> filterHandlers = new HashMap<>();
+        // gemensamma filter
         filterHandlers.put("name", (crit, value) -> crit.and("name").regex(value, "i"));
 
         filterHandlers.put("color", (crit, value) -> crit.and("color").is(value));
 
+        // specifika filter för varje klass
+        if(Collar.class.equals(productclass)) {
+            filterHandlers.put("size", (crit, value) -> crit.and("size").is(value));
+        }
 
+        if(Leash.class.equals(productclass)) {
+            filterHandlers.put("length", (crit, value) -> crit.and("length").is(Double.parseDouble(value)));
+        }
+
+        if(Leash.class.equals(productclass) || Collar.class.equals(productclass)) {
+            filterHandlers.put("material", (crit, value) -> crit.and("material").is(value));
+        }
+
+        filters.forEach((key, value) -> {
+            if(filterHandlers.containsKey(key)) {
+                filterHandlers.get(key).accept(criteria, value);
+            }
+        });
+
+        String producTypeAlias = getProductTypeAlias(productclass);
+        criteria.and("_class").is(producTypeAlias);
+
+        query.addCriteria(criteria);
+
+        return mongoTemplate.find(query, (Class<Product>) productclass);
     }
 }
+
+
+
+
+
+
+
 
 
 
