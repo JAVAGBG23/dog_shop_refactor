@@ -34,7 +34,7 @@ public class FilterProductService {
                   String paramValue = entry.getValue();
                   return filters.get(paramName).apply(paramValue);
               })
-              .collect(Collectors.toList());
+              .toList();
 
       Predicate<Product> combinedPredicate = predicates.stream()
               .reduce(product -> true, Predicate::and);
